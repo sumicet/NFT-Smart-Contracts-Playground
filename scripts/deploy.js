@@ -1,19 +1,13 @@
-const { ethers } = require('hardhat');
+const { task } = require('hardhat/config');
+const { getAccount } = require('./helpers');
 
-async function main() {
-    const [deployer] = await ethers.getSigners();
+task('check-balance', 'Display the balance').setAction(async function (taskArguments, hre) {
+    const account = getAccount();
+    console.log(`Balance: ${await account.getBalance()}`);
+});
 
-    console.log(`Deployer: ${deployer.address}@${(await deployer.getBalance()).toString()}`);
-
-    const NFT = await ethers.getContractFactory('NFT');
+task('deploy', 'Deploy NFT.sol').setAction(async function (taskArguments, hre) {
+    const NFT = await hre.ethers.getContractFactory('NFT', getAccount());
     const nft = await NFT.deploy();
-
     console.log(`Deployed to ${nft.address}`);
-}
-
-main()
-    .then(() => process.exit(0))
-    .catch(error => {
-        console.error(error);
-        process.exit(1);
-    });
+});
