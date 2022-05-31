@@ -1,4 +1,5 @@
 const { ethers } = require('ethers');
+const { getContractAt } = require('@nomiclabs/hardhat-ethers/internal/helpers');
 
 function getEnvVariable(key, defaultValue) {
     if (process.env[key]) {
@@ -22,8 +23,14 @@ function getAccount() {
     return new ethers.Wallet(getEnvVariable('ACCOUNT_PRIVATE_KEY'), getProvider());
 }
 
+function getContract(contractName, hre) {
+    const account = getAccount();
+    return getContractAt(hre, contractName, getEnvVariable('NFT_CONTRACT_ADDRESS'), account);
+}
+
 module.exports = {
     getEnvVariable,
     getProvider,
     getAccount,
+    getContract,
 };
